@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wicked Film İnceleme</title>
+    <style>
+        :root {
+            --neon-green: #00ff99;
+            --dark-space: #0a0a1a;
+            --darker-green: #001a00;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--dark-space);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 20% 30%, var(--darker-green) 0%, transparent 30%),
+                linear-gradient(to bottom, #000000, var(--darker-green));
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 30px;
+            background: rgba(5, 15, 10, 0.85);
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 255, 150, 0.3);
+            border: 1px solid var(--neon-green);
+        }
+
+        .film-afis {
+            width: 100%;
+            max-height: 700px;
+            object-fit: contain;
+            border-radius: 10px;
+            border: 3px solid var(--neon-green);
+            margin-bottom: 25px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            background: black;
+        }
+
+        .film-bilgileri {
+            position: relative;
+            background: rgba(0, 20, 10, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 3px solid var(--neon-green);
+            max-height: 200px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .film-bilgileri.expanded {
+            max-height: none;
+        }
+
+        .devamini-oku {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            padding: 10px;
+            background: linear-gradient(to bottom, transparent, var(--darker-green));
+            cursor: pointer;
+            color: var(--neon-green);
+        }
+
+        .oyuncu-listesi {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .oyuncu {
+            background: rgba(0, 10, 5, 0.5);
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid rgba(0, 255, 150, 0.3);
+        }
+
+        .platform-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .platform-link {
+            display: inline-block;
+            padding: 12px 25px;
+            background: rgba(0, 255, 150, 0.1);
+            color: var(--neon-green);
+            text-decoration: none;
+            border: 1px solid var(--neon-green);
+            border-radius: 30px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .platform-link:hover {
+            background: var(--neon-green);
+            color: #000;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 255, 150, 0.4);
+        }
+
+        .fragman-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            margin: 30px 0;
+            border-radius: 10px;
+            border: 2px solid var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 150, 0.3);
+            background: #000;
+        }
+
+        .fragman-iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .quality-selector {
+            margin: 15px 0;
+            color: var(--neon-green);
+        }
+
+        .quality-selector select {
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: 1px solid var(--neon-green);
+            padding: 8px 15px;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+
+        .yorumlar {
+            background: rgba(0, 15, 8, 0.7);
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border-top: 2px solid var(--neon-green);
+        }
+
+        .yorum-formu {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .yorum-formu textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--neon-green);
+            border-radius: 5px;
+            color: white;
+            resize: vertical;
+        }
+
+        .yorum-formu button {
+            background: linear-gradient(135deg, var(--neon-green), #00cc88);
+            color: var(--dark-space);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            align-self: flex-end;
+            box-shadow: 0 0 15px rgba(0, 255, 150, 0.5);
+        }
+
+        .yorum-formu button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(0, 255, 150, 0.7);
+        }
+
+        .yorum {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border-left: 3px solid var(--neon-green);
+            position: relative;
+        }
+
+        .yorum-sil {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff5555;
+            border: none;
+            border-radius: 3px;
+            padding: 3px 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .yorum-sil:hover {
+            background: rgba(255, 0, 0, 0.4);
+        }
+
+        .karakter-sayaci {
+            text-align: right;
+            font-size: 12px;
+            color: #aaa;
+            margin-top: -10px;
+        }
+
+        .karakter-sayaci.error {
+            color: #ff5555;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 20px auto;
+            }
+            
+            .film-afis {
+                max-height: 400px;
+            }
+            
+            .platform-links {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- AFİŞ (YENİLENMİŞ LİNK) -->
+        <img class="film-afis" src="https://drive.google.com/uc?id=1Lg2QLW069gw9_7s4ngdU-08UaHC2qwF1" alt="Wicked Afişi" onerror="this.src='https://drive.google.com/thumbnail?id=1Lg2QLW069gw9_7s4ngdU-08UaHC2qwF1&sz=w2000'">
+
+        <!-- FİLM BİLGİLERİ -->
+        <div class="film-bilgileri" id="filmBilgileri">
+            <h2>WICKED: OZ'UN ARDINDAKİ GERÇEK</h2>
+            <p><strong>Yönetmen:</strong> Jon M. Chu</p>
+            <p><strong>IMDB:</strong> 8.7/10 (Ön Değerlendirme)</p>
+            <p><strong>Çıkış Tarihi:</strong> 27 Kasım 2024</p>
+            <p><strong>Konu:</strong> Broadway müzikalinin epik sinema uyarlaması Wicked, izleyicileri Oz'un büyülü dünyasına davet ediyor. Yeşil tenli ve toplum tarafından dışlanan Elphaba ile popüler Glinda'nın beklenmedik dostluğunu konu alan film, "Kötü Cadı"nın gerçek hikayesini anlatıyor. İki genç kadın Shiz Üniversitesi'nde sihrin sırlarını öğrenirken, aşk, ihanet ve siyasi entrikalarla dolu bir yolculuğa çıkıyorlar. Bu görkemli yapım; görsel efektleri, unutulmaz şarkıları ve güçlü oyuncu kadrosuyla izleyiciyi büyülemeyi vaat ediyor...</p>
+            <div class="devamini-oku" onclick="toggleText()">Devamını Oku ▼</div>
+        </div>
+
+        <!-- OYUNCULAR -->
+        <h2>OYUNCU KADROSU</h2>
+        <div class="oyuncu-listesi">
+            <div class="oyuncu">
+                <div style="color: var(--neon-green); font-weight: bold;">Cynthia Erivo</div>
+                <div>Elphaba (Kötü Cadı)</div>
+            </div>
+            <div class="oyuncu">
+                <div style="color: var(--neon-green); font-weight: bold;">Ariana Grande</div>
+                <div>Glinda (İyi Cadı)</div>
+            </div>
+            <div class="oyuncu">
+                <div style="color: var(--neon-green); font-weight: bold;">Jonathan Bailey</div>
+                <div>Fiyero Tigelaar</div>
+            </div>
+            <div class="oyuncu">
+                <div style="color: var(--neon-green); font-weight: bold;">Michelle Yeoh</div>
+                <div>Madame Morrible</div>
+            </div>
+        </div>
+
+        <!-- YAYIN PLATFORMLARI -->
+        <h2>NEREDE İZLEYEBİLİRSİNİZ?</h2>
+        <div class="platform-links">
+            <a href="https://www.primevideo.com/detail/Wicked/0H3DDB5PT4SJ9KQZJZ2J9JZ2J9" class="platform-link" target="_blank">Prime Video</a>
+            <a href="#" class="platform-link" style="opacity:0.5;cursor:not-allowed">Netflix (Yakında)</a>
+            <a href="#" class="platform-link" style="opacity:0.5;cursor:not-allowed">Sinemalar (27 Kasım'dan itibaren)</a>
+        </div>
+
+        <!-- FRAGMAN VE KALİTE SEÇİMİ -->
+        <h2>FRAGMAN</h2>
+        <div class="quality-selector">
+            <label>Video Kalitesi: </label>
+            <select id="qualitySelect" onchange="changeQuality(this.value)">
+                <option value="720">720p (HD)</option>
+                <option value="1080">1080p (Full HD)</option>
+                <option value="max">En Yüksek Kalite</option>
+            </select>
+        </div>
+        
+        <div class="fragman-container">
+            <iframe class="fragman-iframe" 
+                    id="videoFrame"
+                    src="https://drive.google.com/file/d/1mMqgvvVj-ZeuXpRsRyIpGFOLRNmQYrMw/preview?hd=1" 
+                    allow="autoplay; encrypted-media" 
+                    allowfullscreen>
+            </iframe>
+        </div>
+
+        <!-- YORUMLAR -->
+        <div class="yorumlar">
+            <h2>YORUMLAR</h2>
+            <div class="yorum-formu">
+                <textarea id="yorumInput" placeholder="Yorumunuzu yazın (max 60 karakter)" maxlength="60"></textarea>
+                <div id="karakterSayaci" class="karakter-sayaci">0/60 karakter</div>
+                <button id="gonderButon">GÖNDER</button>
+            </div>
+            <div id="yorumListesi"></div>
+        </div>
+    </div>
+
+    <script>
+        // Metni Genişletme
+        function toggleText() {
+            const bilgiKutusu = document.getElementById('filmBilgileri');
+            bilgiKutusu.classList.toggle('expanded');
+            document.querySelector('.devamini-oku').textContent = 
+                bilgiKutusu.classList.contains('expanded') ? '▲ Daralt' : '▼ Devamını Oku';
+        }
+
+        // Kalite Değiştirme
+        function changeQuality(quality) {
+            const videoFrame = document.getElementById('videoFrame');
+            let src = "https://drive.google.com/file/d/1mMqgvvVj-ZeuXpRsRyIpGFOLRNmQYrMw/preview";
+            
+            if(quality === "1080") {
+                src += "?hd=1";
+            } else if(quality === "max") {
+                src += "?hd=1&authuser=0";
+            }
+            
+            videoFrame.src = src;
+        }
+
+        // Karakter Sayacı
+        document.getElementById('yorumInput').addEventListener('input', function() {
+            const karakterSayisi = this.value.length;
+            const sayac = document.getElementById('karakterSayaci');
+            sayac.textContent = `${karakterSayisi}/60 karakter`;
+            
+            if(karakterSayisi > 60) {
+                sayac.classList.add('error');
+                document.getElementById('gonderButon').disabled = true;
+            } else {
+                sayac.classList.remove('error');
+                document.getElementById('gonderButon').disabled = false;
+            }
+        });
+
+        // Yorum Silme Fonksiyonu
+        function yorumSil(element) {
+            if(confirm("Bu yorumu silmek istediğinizden emin misiniz?")) {
+                element.parentElement.remove();
+                yorumlariGuncelle();
+            }
+        }
+
+        // Yorumları LocalStorage'a Kaydetme
+        function yorumlariGuncelle() {
+            const yorumlar = [];
+            document.querySelectorAll('#yorumListesi .yorum div:first-child').forEach(yorum => {
+                yorumlar.push(yorum.textContent);
+            });
+            localStorage.setItem('wickedYorumlar', JSON.stringify(yorumlar));
+        }
+
+        // Yorum Ekleme Fonksiyonu
+        document.getElementById('gonderButon').addEventListener('click', function() {
+            const yorumInput = document.getElementById('yorumInput');
+            const yorumMetni = yorumInput.value.trim();
+            
+            if(yorumMetni.length === 0 || yorumMetni.length > 60) {
+                alert('Lütfen 1-60 karakter aralığında yorum yazın!');
+                return;
+            }
+
+            const yorumDiv = document.createElement('div');
+            yorumDiv.className = 'yorum';
+            yorumDiv.innerHTML = `
+                <div>${yorumMetni}</div>
+                <button class="yorum-sil" onclick="yorumSil(this)">Sil</button>
+            `;
+
+            document.getElementById('yorumListesi').prepend(yorumDiv);
+            yorumInput.value = '';
+            document.getElementById('karakterSayaci').textContent = '0/60 karakter';
+            
+            yorumlariGuncelle();
+        });
+
+        // Sayfa Yüklendiğinde Kayıtlı Yorumları Getir
+        window.addEventListener('load', function() {
+            const kayitliYorumlar = JSON.parse(localStorage.getItem('wickedYorumlar') || '[]');
+            kayitliYorumlar.forEach(yorum => {
+                const yorumDiv = document.createElement('div');
+                yorumDiv.className = 'yorum';
+                yorumDiv.innerHTML = `
+                    <div>${yorum}</div>
+                    <button class="yorum-sil" onclick="yorumSil(this)">Sil</button>
+                `;
+                document.getElementById('yorumListesi').appendChild(yorumDiv);
+            });
+
+            // Afiş yüklenmediyse yedek link denemesi
+            const afis = document.querySelector('.film-afis');
+            afis.onerror = function() {
+                this.src = 'https://drive.google.com/thumbnail?id=1Lg2QLW069gw9_7s4ngdU-08UaHC2qwF1&sz=w2000';
+            };
+        });
+    </script>
+</body>
+</html>

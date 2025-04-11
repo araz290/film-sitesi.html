@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Film İnceleme</title>
+    <style>
+        body { font-family: Arial; background: #f0f0f0; margin: 0; padding: 20px; }
+        .film { background: white; border-radius: 10px; padding: 20px; max-width: 800px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .afis { width: 100%; border-radius: 5px; }
+        .fragman { width: 100%; height: 400px; border: none; margin: 20px 0; }
+        .platform { margin: 10px 0; }
+        .platform a { color: #2b5876; text-decoration: none; font-weight: bold; margin-right: 15px; }
+    </style>
+</head>
+<body>
+    <div class="film">
+        <!-- AFİŞ -->
+        <h1>INTERSTELLAR</h1>
+        <img class="afis" src="https://drive.google.com/file/d/1ZjUEs57irUxmEtQlWXHGRX9a5Rn9N4MG/view?usp=drive_link" alt="Interstellar Afiş">
+
+        <!-- FİLM BİLGİLERİ -->
+        <p><strong>Yönetmen:</strong> Christopher Nolan</p>
+        <p><strong>IMDB:</strong> 8.6</p>
+        <p>Astronotlar, uzayda yeni bir yaşam alanı ararken zaman bükülmeleriyle mücadele eder...</p>
+
+        <!-- FRAGMAN -->
+        <h2>FRAGMAN</h2>
+        <iframe class="fragman" src="https://drive.google.com/file/d/1fxZzHz3om8Lon6zTqxzgCZhFwIg_Uu4j/view?usp=drive_link"></iframe>
+
+        <!-- NEREDEN İZLENİR? -->
+        <div class="platform">
+            <h2>NEREDEN İZLENİR?</h2>
+            <a href="https://www.netflix.com/tr/title/123" target="_blank">Netflix</a>
+            <a href="https://www.blutv.com/filmler/456" target="_blank">BluTV</a>
+        </div>
+
+        <!-- YORUMLAR -->
+        <div id="disqus_thread"></div>
+    </div>
+
+    <!-- DISQUS YORUM SİSTEMİ -->
+    <script>
+        var disqus_config = function () {
+            this.page.url = "SİTENİN-URLSİ"; // Örnek: https://ornek-site.netlify.app
+            this.page.identifier = "interstellar";
+        };
+        (function() {
+            var d = document, s = d.createElement('script');
+            s.src = 'https://film-inceleme.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+</body>
+</html>
